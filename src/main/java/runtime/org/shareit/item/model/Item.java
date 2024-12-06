@@ -1,38 +1,46 @@
 package runtime.org.shareit.item.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import runtime.org.shareit.request.model.ItemRequest;
 import runtime.org.shareit.user.model.User;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "items")
 public class Item {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotBlank
+    @Column(name = "name", nullable = false)
     private String name;
-    @NotBlank
+    @Column(name = "description", nullable = false)
     private String description;
-    private User owner;
-    @NotBlank
+    @NotNull
+    @Column(name = "available", nullable = false)
     private Boolean available;
-    private ItemRequest request;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private ItemRequest request;
 
     public Item(String name, String description, Boolean available) {
         this.name = name;
         this.description = description;
         this.available = available;
     }
-
-    public Item(Long id, String name, String description, Boolean available) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
-
 }

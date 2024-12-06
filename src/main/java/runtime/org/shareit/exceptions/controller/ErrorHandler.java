@@ -1,60 +1,37 @@
 package runtime.org.shareit.exceptions.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import runtime.org.shareit.exceptions.*;
 import runtime.org.shareit.exceptions.model.ErrorResponse;
 
+@Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleEmailIsNullException(final EmailIsNullException e) {
-        return new ErrorResponse("",e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailAlreadyExistException(final EmailAlreadyExistException e) {
-        return new ErrorResponse("",e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(final UserNotFoundException e) {
-        return new ErrorResponse("",e.getMessage());
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.warn("Получен статус 404 NOT_FOUND {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleAvailableIsNullException(final AvailableIsNullExceptions e) {
-        return new ErrorResponse("",e.getMessage());
+    public ErrorResponse handleValidationException(final Exception e) {
+        log.warn("Получен статус 400 BAD_REQUEST {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNameIsNullException(final NameIsNullException e) {
-        return new ErrorResponse("",e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleDescriptionIsNullException(final DescriptionIsNullException e) {
-        return new ErrorResponse("",e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleUserNotOwnsItemException(final UserNotOwnsItemException e) {
-        return new ErrorResponse("",e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e) {
-        return new ErrorResponse("",e.getMessage());
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleOtherException(final Throwable e) {
+        log.warn("Получен статус 500 SERVER_ERROR {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 }

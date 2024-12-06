@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import runtime.org.shareit.item.dto.CommentDto;
+import runtime.org.shareit.item.dto.CommentDtoOut;
 import runtime.org.shareit.item.dto.ItemDto;
 import runtime.org.shareit.item.dto.ItemDtoOut;
 import runtime.org.shareit.item.service.ItemServiceDao;
@@ -22,7 +24,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDtoOut add(@RequestHeader(USER_HEADER) Long userId,
-                       @RequestBody ItemDto itemDto) {
+                          @RequestBody ItemDto itemDto) {
         return itemService.add(userId, itemDto);
     }
 
@@ -41,10 +43,10 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoOut> findAll(@RequestHeader(USER_HEADER) Long userId,
-                                 @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                    @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
-        return itemService.findAll(userId);
+        return itemService.findAll(userId, from, size);
     }
 
     @GetMapping("/search")
@@ -52,6 +54,14 @@ public class ItemController {
                                         @RequestParam(name = "text") String text,
                                         @RequestParam(value = "from", defaultValue = "0") Integer from,
                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return itemService.search(userId, text);
+        return itemService.search(userId, text, from, size);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoOut createComment(@RequestHeader(USER_HEADER) Long userId,
+                                       @Validated @RequestBody CommentDto commentDto,
+                                       @PathVariable Long itemId) {
+        log.info("POST Запрос на создание комментария id = {}", itemId);
+        return itemService.createComment(userId, commentDto, itemId);
     }
 }

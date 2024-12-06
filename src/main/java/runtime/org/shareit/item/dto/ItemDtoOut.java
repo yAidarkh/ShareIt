@@ -1,28 +1,42 @@
 package runtime.org.shareit.item.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import runtime.org.shareit.booking.dto.BookingDtoOut;
+
+import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ItemDtoOut {
     private Long id;
-    @NotBlank
     private String name;
-    @NotBlank
     private String description;
-    @NotBlank
     private Boolean available;
+    private BookingDtoOut lastBooking;
+    private List<CommentDtoOut> comments;
+    private BookingDtoOut nextBooking;
     private Long requestId;
-    private Long ownerId;
 
-    public ItemDtoOut(Long id, String name, String description, Boolean available, Long requestId, Long ownerId) {
+
+    public ItemDtoOut(Long id, String name, String description, Boolean available) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
-        this.requestId = requestId;
-        this.ownerId = ownerId;
+    }
+
+    public ItemDtoOut(Long id, String name, String description, Boolean available, BookingDtoOut lastBooking, List<CommentDtoOut> comments, BookingDtoOut nextBooking) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.lastBooking = lastBooking;
+        this.comments = comments;
+        this.nextBooking = nextBooking;
     }
 }

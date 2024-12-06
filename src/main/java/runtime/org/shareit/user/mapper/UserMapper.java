@@ -8,19 +8,18 @@ import runtime.org.shareit.user.model.User;
 public class UserMapper {
 
     public UserDto toUserDto(User user) {
-        UserDto userDto = new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail()
-        );
-        return userDto;
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
     }
 
     public User toUser(UserDto userDto) {
-        User user = new User(
-                userDto.getName(),
-                userDto.getEmail()
-        );
-        return user;
+        return User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
     }
 }

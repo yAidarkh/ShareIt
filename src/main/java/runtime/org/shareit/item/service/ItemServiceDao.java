@@ -1,5 +1,7 @@
 package runtime.org.shareit.item.service;
 
+import runtime.org.shareit.item.dto.CommentDto;
+import runtime.org.shareit.item.dto.CommentDtoOut;
 import runtime.org.shareit.item.dto.ItemDto;
 import runtime.org.shareit.item.dto.ItemDtoOut;
 
@@ -12,8 +14,9 @@ public interface ItemServiceDao {
 
     ItemDtoOut findItemById(Long userId, Long itemId);
 
-    List<ItemDtoOut> findAll(Long userId);
+    List<ItemDtoOut> findAll(Long userId, Integer from, Integer size);
 
-    List<ItemDtoOut> search(Long userId, String text);
+    List<ItemDtoOut> search(Long userId, String text, Integer from, Integer size);
 
+    CommentDtoOut createComment(Long userId, CommentDto commentDto, Long itemId);
 }

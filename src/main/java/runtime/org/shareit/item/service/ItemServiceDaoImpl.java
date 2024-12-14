@@ -22,6 +22,7 @@ import runtime.org.shareit.item.model.Comment;
 import runtime.org.shareit.item.model.Item;
 import runtime.org.shareit.item.repository.CommentRepository;
 import runtime.org.shareit.item.repository.ItemRepository;
+import runtime.org.shareit.request.repository.ItemRequestRepository;
 import runtime.org.shareit.user.dto.UserDto;
 import runtime.org.shareit.user.mapper.UserMapper;
 import runtime.org.shareit.user.model.User;
@@ -43,6 +44,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Transactional(readOnly = true)
 public class ItemServiceDaoImpl implements ItemServiceDao {
+    private final ItemRequestRepository itemRequestRepository;
     private final UserServiceDao userService;
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
@@ -54,6 +56,11 @@ public class ItemServiceDaoImpl implements ItemServiceDao {
         UserDto user = userService.findById(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner((UserMapper.toUser(user)));
+
+        if (itemDto.getRequestId() != null) {
+            item.setRequest(itemRequestRepository.getReferenceById(itemDto.getRequestId()));
+        }
+
         return ItemMapper.toItemDtoOut(itemRepository.save(item));
     }
 
